@@ -49,31 +49,31 @@ namespace LuckyMultiplayer.Scripts
         private void Spawn()
         {
             // Get all players
-            /*var wyzards = FindObjectsByType<Wyzard>(FindObjectsSortMode.None);
-            if (wyzards.Length == 0) return;
+            var players = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+            if (players.Length == 0) return;
 
-            float xMin = wyzards[0].transform.position.x;
-            float yMin = wyzards[0].transform.position.y;
+            float xMin = players[0].transform.position.x;
+            float yMin = players[0].transform.position.y;
             float xMax = xMin;
             float yMax = yMin;
 
-            foreach (var wyzard in wyzards)
+            foreach (var player in players)
             {
-                xMin = Mathf.Min(xMin, wyzard.transform.position.x);
-                xMax = Mathf.Max(xMax, wyzard.transform.position.x);
-                yMin = Mathf.Min(yMin, wyzard.transform.position.y);
-                yMax = Mathf.Max(yMax, wyzard.transform.position.y);
+                xMin = Mathf.Min(xMin, player.transform.position.x);
+                xMax = Mathf.Max(xMax, player.transform.position.x);
+                yMin = Mathf.Min(yMin, player.transform.position.y);
+                yMax = Mathf.Max(yMax, player.transform.position.y);
             }
 
             for (int i = 0; i < spawnCount; i++)
             {
-                float x = Random.Range(xMin - 20, xMax + 20);
-                float y = Random.Range(yMin - 20, yMax + 20);
+                float x = Random.Range(xMin - 10, xMax + 10);
+                float y = Random.Range(yMin - 10, yMax + 10);
 
                 var newObject = Instantiate(diamondGemPrefab, new Vector3(x, y, 0), Quaternion.identity);
                 var networkObject = newObject.GetComponent<NetworkObject>();
                 networkObject.Spawn(true);
-            }*/
+            }
         }
     }
 }

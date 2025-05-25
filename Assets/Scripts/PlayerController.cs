@@ -5,9 +5,12 @@ namespace LuckyMultiplayer.Scripts
 {
     public class PlayerController : NetworkBehaviour
     {
-        [SerializeField] private float speed = 3f;
         private Camera mainCamera;
         private Vector3 mouseInput = Vector3.zero;
+        [SerializeField] private float baseSpeed = 3f;
+        private float currentSpeed;
+
+        private DiamondGemSystem diamondGemSystem;
 
         private void Initialize()
         {
@@ -18,13 +21,19 @@ namespace LuckyMultiplayer.Scripts
         {
             base.OnNetworkSpawn();
             Initialize();
+            diamondGemSystem = GetComponent<DiamondGemSystem>();
+        }
+
+        private void Start()
+        {
+            currentSpeed = baseSpeed;
         }
 
         private void Update()
         {
             if (!NetworkObject.IsLocalPlayer || !Application.isFocused)
                 return;
-            
+
             // Movement
             mouseInput.x = Input.mousePosition.x;
             mouseInput.y = Input.mousePosition.y;
@@ -32,7 +41,7 @@ namespace LuckyMultiplayer.Scripts
 
             Vector3 mouseWorldCoordinates = mainCamera.ScreenToWorldPoint(mouseInput);
             mouseWorldCoordinates.z = 0f;
-            transform.position = Vector3.MoveTowards(transform.position, mouseWorldCoordinates, Time.deltaTime * speed);
+            transform.position = Vector3.MoveTowards(transform.position, mouseWorldCoordinates, Time.deltaTime * currentSpeed);
 
             // Rotation
             if (mouseWorldCoordinates != transform.position)
@@ -41,7 +50,59 @@ namespace LuckyMultiplayer.Scripts
                 targetDirection.z = 0f;
                 transform.up = targetDirection;
             }
-            
+
+            // Input
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                TryUseDiamonds();
+            }
+
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                TryLevelUp();
+            }
+        }
+
+        private void TryUseDiamonds()
+        {
+            if (diamondGemSystem != null && diamondGemSystem.HasEnoughDiamonds(3))
+            {
+                diamondGemSystem.UseDiamonds(3);
+
+                // new
+                // Deal 1 damage to another player
+                TryDealDamageToOtherPlayer();
+            }
+        }
+
+        // new
+        private void TryDealDamageToOtherPlayer()
+        {
+            foreach (var playerObj in FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
+            {
+                if (playerObj != this)
+                {
+                    playerObj.ReduceHealthServerRpc();
+                }
+            }
+        }
+
+        // new
+        [ServerRpc(RequireOwnership = false)]
+        public void ReduceHealthServerRpc()
+        {
+            diamondGemSystem.ReduceHealth();
+        }
+
+        private void TryLevelUp()
+        {
+            diamondGemSystem?.TryLevelUp();
+        }
+        
+        // Called by server to update speed
+        public void UpdateSpeed(ushort newLevel)
+        {
+            currentSpeed = baseSpeed + newLevel * 1.5f;
         }
     }
 }

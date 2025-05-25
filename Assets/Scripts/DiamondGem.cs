@@ -1,16 +1,26 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class DiamondGem : MonoBehaviour
+namespace LuckyMultiplayer.Scripts
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class DiamondGem : NetworkBehaviour
     {
-        
-    }
+        private void OnTriggerEnter2D(Collider2D collider)
+        {
+            if (!collider.CompareTag("Player"))
+                return;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            if (!NetworkManager.Singleton.IsServer)
+                return;
+
+            if (collider.TryGetComponent(out DiamondGemSystem player))
+            {
+                Debug.Log("I picked a gem!");
+                player.PickUpDiamondGem();
+            }
+
+            NetworkObject.Despawn(); // removes it from the scene
+
+        }
     }
 }
