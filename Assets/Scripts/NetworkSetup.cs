@@ -21,11 +21,13 @@ namespace LuckyMultiplayer.Scripts
 {
     public class NetworkSetup : MonoBehaviour
     {
-        [SerializeField] private PlayerController[] playerPrefabs;
+        // old
+        //[SerializeField] private PlayerController[] playerPrefabs;
+        [SerializeField] private GameObject[] playerPrefabs;
         [SerializeField] private Transform[] spawnPoints;
         private int playerPrefabIndex = 0;
 
-        private bool isServer = false;
+        [SerializeField] private bool isServer = false;
 
         private void Start()
         {
@@ -97,7 +99,7 @@ namespace LuckyMultiplayer.Scripts
 
             // Spawn player object
             var spawnedObject = Instantiate(playerPrefabs[playerPrefabIndex], spawnPos, Quaternion.identity);
-            var prefabNetworkObject = spawnedObject.GetComponent<NetworkObject>();
+            var prefabNetworkObject = spawnedObject.GetComponentInChildren<NetworkObject>();
             prefabNetworkObject.SpawnAsPlayerObject(clientID, true);
             prefabNetworkObject.ChangeOwnership(clientID);
             playerPrefabIndex = (playerPrefabIndex + 1) % playerPrefabs.Length;
@@ -216,7 +218,7 @@ namespace LuckyMultiplayer.Scripts
             process.Start();
         }
 
-        [MenuItem("Tools/Build and Launch (Server)", priority = 10)]
+        [MenuItem("Tools/Build and Launch (Client)", priority = 10)]
         public static void BuildAndLaunch1()
         {
             CloseAll();
@@ -237,10 +239,10 @@ namespace LuckyMultiplayer.Scripts
             }
         }
 
-        [MenuItem("Tools/Launch (Server) _F11", priority = 30)]
+        [MenuItem("Tools/Launch (Client) _F11", priority = 30)]
         public static void Launch1()
         {
-            Run("Builds\\LuckyMultiplayer.exe", "--server");
+            Run("Builds\\LuckyMultiplayer.exe", "--client");
         }
 
         [MenuItem("Tools/Launch (Server + Client)", priority = 40)]

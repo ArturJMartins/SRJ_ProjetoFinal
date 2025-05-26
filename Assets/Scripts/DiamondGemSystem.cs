@@ -1,10 +1,16 @@
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LuckyMultiplayer.Scripts
 {
     public class DiamondGemSystem : NetworkBehaviour
     {
+        [SerializeField] private GameObject healthDisplay;
+        [SerializeField] private Image fill;
+        [SerializeField] private TextMeshProUGUI levelWorldText;
+        [SerializeField] private GameObject shieldVisual;
         private NetworkVariable<ushort> diamonds = new NetworkVariable<ushort>(
             default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
@@ -14,34 +20,58 @@ namespace LuckyMultiplayer.Scripts
         private NetworkVariable<ushort> level = new NetworkVariable<ushort>(
             1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+        private NetworkVariable<bool> shieldActive = new NetworkVariable<bool>(
+            false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        private float maxHealth;
+
+        private void Awake()
+        {
+            maxHealth = 5f;
+        }
+
         public override void OnNetworkSpawn()
         {
+            maxHealth = CalculateMaxHealth(level.Value); // Moved here so it runs for all clients
+
+            // Subscribe to value changed events
+            diamonds.OnValueChanged += OnDiamondsChanged;
+            health.OnValueChanged += OnHealthChanged;
+            level.OnValueChanged += OnLevelChanged;
+            shieldActive.OnValueChanged += OnShieldActiveChanged;
+
             if (IsOwner)
             {
-                // Subscribe to value changed events
-                diamonds.OnValueChanged += OnDiamondsChanged;
-                health.OnValueChanged += OnHealthChanged;
-                level.OnValueChanged += OnLevelChanged;
-
                 // Update UI immediately with current values
                 PlayerUI.UpdateDiamondUI?.Invoke(diamonds.Value);
-                PlayerUI.UpdateHealthUI?.Invoke(health.Value);
+                //PlayerUI.UpdateHealthUI?.Invoke(health.Value);
+                PlayerUI.UpdateHealthUIWithMax?.Invoke(health.Value, (ushort)maxHealth);
                 PlayerUI.UpdateLevelUI?.Invoke(level.Value);
             }
         }
 
-        private void OnEnable()
+        public override void OnNetworkDespawn()
         {
-            diamonds.OnValueChanged += OnDiamondsChanged;
-            health.OnValueChanged += OnHealthChanged;
-            level.OnValueChanged += OnLevelChanged;
+            if (IsOwner)
+            {
+                diamonds.OnValueChanged -= OnDiamondsChanged;
+                health.OnValueChanged -= OnHealthChanged;
+                level.OnValueChanged -= OnLevelChanged;
+                shieldActive.OnValueChanged -= OnShieldActiveChanged;
+            }
         }
 
-        private void OnDisable()
+        private void OnShieldActiveChanged(bool previousValue, bool newValue)
         {
-            diamonds.OnValueChanged -= OnDiamondsChanged;
-            health.OnValueChanged -= OnHealthChanged;
-            level.OnValueChanged -= OnLevelChanged;
+            UpdateShieldVisual(newValue);
+        }
+
+        private void UpdateShieldVisual(bool isActive)
+        {
+            if (shieldVisual != null)
+            {
+                shieldVisual.SetActive(isActive);
+            }
         }
 
         private void OnDiamondsChanged(ushort previousValue, ushort newValue)
@@ -57,13 +87,46 @@ namespace LuckyMultiplayer.Scripts
         private void OnHealthChanged(ushort prev, ushort next)
         {
             if (IsOwner)
-                PlayerUI.UpdateHealthUI?.Invoke(next);
+            {
+                //PlayerUI.UpdateHealthUI?.Invoke(next);
+                PlayerUI.UpdateHealthUIWithMax?.Invoke(next, (ushort)maxHealth);
+            }
+
+            maxHealth = CalculateMaxHealth(level.Value);
+
+            UpdateHPDisplay(); // this is outside of IsOwner because the other player needs to see the hp bar change
         }
 
         private void OnLevelChanged(ushort oldLevel, ushort newLevel)
         {
             if (IsOwner)
+            {
                 PlayerUI.UpdateLevelUI?.Invoke(newLevel);
+                maxHealth = CalculateMaxHealth(newLevel);
+                PlayerUI.UpdateHealthUIWithMax?.Invoke(health.Value, (ushort)maxHealth);
+            }
+
+            maxHealth = CalculateMaxHealth(newLevel);
+            levelWorldText.text = newLevel.ToString();
+
+            UpdateHPDisplay();
+        }
+
+        private float CalculateMaxHealth(ushort level)
+        {
+            return 5 + (level - 1); // Example logic: base 5 health + 1 per level
+        }
+
+        private void UpdateHPDisplay()
+        {
+            float p = Mathf.Clamp01(health.Value / maxHealth);
+
+            if (fill)
+                fill.transform.localScale = new Vector3(p, 1.0f, 1.0f);
+
+            if (healthDisplay != null)
+                healthDisplay.SetActive(p > 0.0f);
+
         }
 
         public void PickUpDiamondGem()
@@ -87,12 +150,24 @@ namespace LuckyMultiplayer.Scripts
             return diamonds.Value >= amount;
         }
 
-        public void ReduceHealth()
+        public void ReduceHealth(ushort amount)
         {
             if (IsServer && health.Value > 0)
             {
-                health.Value--;
+                if (shieldActive.Value)
+                {
+                    shieldActive.Value = false;
+                    return;
+                }
+                
+                health.Value -= amount;
             }
+        }
+
+        public int GetDamage()
+        {
+            float baseDamage = 1f;
+            return Mathf.CeilToInt(baseDamage * Mathf.Pow(1.5f, level.Value - 1));
         }
 
         public void TryLevelUp()
@@ -101,6 +176,15 @@ namespace LuckyMultiplayer.Scripts
             {
                 UseDiamonds(3);
                 AttemptLevelUpServerRpc();
+            }
+        }
+
+        public void ActivateShield()
+        {
+            if (IsOwner && HasEnoughDiamonds(2))
+            {
+                UseDiamonds(2);
+                ActivateShieldServerRpc();
             }
         }
 
@@ -123,7 +207,7 @@ namespace LuckyMultiplayer.Scripts
                 UpdateSpeedClientRpc(level.Value);
             }
         }
-        
+
         [ClientRpc]
         private void UpdateSpeedClientRpc(ushort newLevel)
         {
@@ -132,6 +216,13 @@ namespace LuckyMultiplayer.Scripts
             {
                 playerController.UpdateSpeed(newLevel);
             }
+        }
+        
+        [ServerRpc]
+        private void ActivateShieldServerRpc()
+        {
+            shieldActive.Value = true;
+            // Optional: Start a coroutine or timer here to disable shield after some seconds automatically
         }
     }
 }

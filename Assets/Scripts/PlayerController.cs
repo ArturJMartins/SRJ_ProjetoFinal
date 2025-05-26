@@ -61,16 +61,20 @@ namespace LuckyMultiplayer.Scripts
             {
                 TryLevelUp();
             }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                TryToShield();
+            }
         }
 
         private void TryUseDiamonds()
         {
-            if (diamondGemSystem != null && diamondGemSystem.HasEnoughDiamonds(3))
+            if (diamondGemSystem != null && diamondGemSystem.HasEnoughDiamonds(1))
             {
-                diamondGemSystem.UseDiamonds(3);
+                diamondGemSystem.UseDiamonds(1);
 
-                // new
-                // Deal 1 damage to another player
+                // Deal damage to another player
                 TryDealDamageToOtherPlayer();
             }
         }
@@ -78,31 +82,37 @@ namespace LuckyMultiplayer.Scripts
         // new
         private void TryDealDamageToOtherPlayer()
         {
+            int damage = diamondGemSystem.GetDamage();
             foreach (var playerObj in FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
             {
                 if (playerObj != this)
                 {
-                    playerObj.ReduceHealthServerRpc();
+                    playerObj.ReduceHealthServerRpc((ushort)damage);
                 }
             }
         }
 
         // new
         [ServerRpc(RequireOwnership = false)]
-        public void ReduceHealthServerRpc()
+        public void ReduceHealthServerRpc(ushort damage)
         {
-            diamondGemSystem.ReduceHealth();
+            diamondGemSystem.ReduceHealth(damage);
         }
 
         private void TryLevelUp()
         {
             diamondGemSystem?.TryLevelUp();
         }
-        
+
         // Called by server to update speed
         public void UpdateSpeed(ushort newLevel)
         {
             currentSpeed = baseSpeed + newLevel * 1.5f;
+        }
+
+        private void TryToShield()
+        {
+            diamondGemSystem?.ActivateShield();
         }
     }
 }

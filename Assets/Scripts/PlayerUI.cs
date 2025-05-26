@@ -9,7 +9,9 @@ namespace LuckyMultiplayer.Scripts
         public static Action<ushort> UpdateDiamondUI;
 
         // new
-        public static Action<ushort> UpdateHealthUI;
+        //public static Action<ushort> UpdateHealthUI;
+
+        public static Action<ushort, ushort> UpdateHealthUIWithMax;
 
         // new
         public static Action<ushort> UpdateLevelUI;
@@ -26,7 +28,8 @@ namespace LuckyMultiplayer.Scripts
             UpdateDiamondUI += ChangeDiamondText;
 
             // new
-            UpdateHealthUI += ChangeHealthText;
+            //UpdateHealthUI += ChangeHealthText;
+            UpdateHealthUIWithMax += ChangeHealthTextWithMax;
 
             // new
             UpdateLevelUI += ChangeLevelText;
@@ -37,7 +40,8 @@ namespace LuckyMultiplayer.Scripts
             UpdateDiamondUI -= ChangeDiamondText;
 
             // new
-            UpdateHealthUI -= ChangeHealthText;
+            //UpdateHealthUI -= ChangeHealthText;
+            UpdateHealthUIWithMax -= ChangeHealthTextWithMax;
 
             // new 
             UpdateLevelUI -= ChangeLevelText;
@@ -45,13 +49,12 @@ namespace LuckyMultiplayer.Scripts
 
         private void ChangeDiamondText(ushort amount)
         {
-            diamondsText.text = $"Gems: {amount}";
+            diamondsText.text = $"{amount}";
         }
 
-        // new
-        private void ChangeHealthText(ushort amount)
+        private void ChangeHealthTextWithMax(ushort current, ushort max)
         {
-            healthText.text = $"HP: {amount}";
+            healthText.text = $"HP: {current}/{max}";
         }
 
         // new

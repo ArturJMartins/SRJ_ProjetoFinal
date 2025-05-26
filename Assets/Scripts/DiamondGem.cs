@@ -15,12 +15,10 @@ namespace LuckyMultiplayer.Scripts
 
             if (collider.TryGetComponent(out DiamondGemSystem player))
             {
-                Debug.Log("I picked a gem!");
                 player.PickUpDiamondGem();
             }
 
             NetworkObject.Despawn(); // removes it from the scene
-
         }
     }
 }
