@@ -14,12 +14,12 @@ The goal of this project is to build an online game (or part of it). The theme
 
 ### What was implemented
 
-Network setup
-Synchronization
-Game loop
-Node.js
-Login(username)
-Matchmaking
+- Network setup
+- Synchronization
+- Game loop
+- Node.js
+- Login(username)
+- Matchmaking
 
 ### Techiniques used
 
@@ -95,11 +95,11 @@ The health NetworkVariable is of type ushort, initialize with 10 of value. So,
 
 ```mermaid
 classDiagram
-    Client A --> Server : inheritance
-    Client B --> Server : inheritance
-    Server --> Client A : inheritance
-    Server --> Client B : inheritance
-    Server Node.js --> Server : inheritance
+    Client A --> Server : 
+    Client B --> Server : 
+    Server --> Client A : 
+    Server --> Client B : 
+    Server Node.js --> Server :
 ```
 
 ## 🚀 How to run the project
