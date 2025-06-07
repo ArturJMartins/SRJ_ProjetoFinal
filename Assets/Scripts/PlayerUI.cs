@@ -8,13 +8,12 @@ namespace LuckyMultiplayer.Scripts
     {
         public static Action<ushort> UpdateDiamondUI;
 
-        // new
-        //public static Action<ushort> UpdateHealthUI;
-
         public static Action<ushort, ushort> UpdateHealthUIWithMax;
 
         // new
         public static Action<ushort> UpdateLevelUI;
+
+        public static Action<ushort> UpdateAttackUI;
         [SerializeField] private TextMeshProUGUI diamondsText;
 
         // new
@@ -22,6 +21,7 @@ namespace LuckyMultiplayer.Scripts
 
         //new
         [SerializeField] private TextMeshProUGUI levelText;
+        [SerializeField] private TextMeshProUGUI attackText;
 
         private void OnEnable()
         {
@@ -33,6 +33,8 @@ namespace LuckyMultiplayer.Scripts
 
             // new
             UpdateLevelUI += ChangeLevelText;
+
+            UpdateAttackUI += ChangeAttackText;
         }
 
         private void OnDisable()
@@ -45,6 +47,8 @@ namespace LuckyMultiplayer.Scripts
 
             // new 
             UpdateLevelUI -= ChangeLevelText;
+
+            UpdateAttackUI -= ChangeAttackText;
         }
 
         private void ChangeDiamondText(ushort amount)
@@ -61,6 +65,11 @@ namespace LuckyMultiplayer.Scripts
         private void ChangeLevelText(ushort level)
         {
             levelText.text = $"Level: {level}";
+        }
+
+        private void ChangeAttackText(ushort atkAmount)
+        {
+            attackText.text = $"Attack: {atkAmount}";
         }
     }
 }

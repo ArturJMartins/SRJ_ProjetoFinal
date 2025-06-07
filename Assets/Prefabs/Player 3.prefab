@@ -183,7 +183,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -917,6 +917,7 @@ GameObject:
   - component: {fileID: 3307298627608392602}
   - component: {fileID: 3303311386664561435}
   - component: {fileID: 2823208891048675363}
+  - component: {fileID: 3003283329585847996}
   - component: {fileID: -7747204339350426726}
   - component: {fileID: 4175416989154952781}
   - component: {fileID: 5643250932643712252}
@@ -1006,6 +1007,20 @@ MonoBehaviour:
   fill: {fileID: 2296414613582588015}
   levelWorldText: {fileID: 3599817997997766419}
   shieldVisual: {fileID: 8691450516343586344}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  lvlFlashColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &3003283329585847996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8649676910858987626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed4f907da85ff21479f6009625a89db1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &-7747204339350426726
 MonoBehaviour:
   m_ObjectHideFlags: 0

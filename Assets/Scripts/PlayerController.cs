@@ -79,7 +79,6 @@ namespace LuckyMultiplayer.Scripts
             }
         }
 
-        // new
         private void TryDealDamageToOtherPlayer()
         {
             int damage = diamondGemSystem.GetDamage();
