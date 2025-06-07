@@ -15,15 +15,10 @@ The goal of this project is to build an online game (or part of it). The theme
 ### What was implemented
 
 Network setup
-
 Synchronization
-
 Game loop
-
 Node.js
-
 Login(username)
-
 Matchmaking
 
 ### Techiniques used
@@ -68,6 +63,7 @@ The gems are essential for the main game loop, it allow players to catch them
  Only the server performs the spawning, in order to ensure that all clients
  receive the same synchronized gem state. If all players disconnect, the script
  removes all gems.
+
 NetworkVariable is a synchronized variable shared across the network, that
  automatically keeps values in sync between the server and all clients.
 So, in order for each player to see the health, level or a shield activated in
@@ -93,18 +89,18 @@ The health NetworkVariable is of type ushort, initialize with 10 of value. So,
 
 ### Network architecture diagram
 
-+-------------+      +-----------------+       +-------------+
-|   Client A  |<---> |      Server      | <--->|   Client B  |
-+-------------+      +-----------------+       +-------------+
-                              ^
-                              |
-                    +-------------------+
-                    |   Server Node.js  |
-                    +-------------------+
-
 - Server handles the communication of the node.js, matchmaking, game logic,
   and state sync.
 - Clients send input/actions and receive game state updates.
+
+```mermaid
+classDiagram
+    Client A --> Server : inheritance
+    Client B --> Server : inheritance
+    Server --> Client A : inheritance
+    Server --> Client B : inheritance
+    Server Node.js --> Server : inheritance
+```
 
 ## 🚀 How to run the project
 
@@ -129,6 +125,7 @@ Unity Netcode for GameObjects: <https://docs-multiplayer.unity3d.com/netcode/1.1
 ### Youtube
 
 Sistemas de Redes para Jogos - Aula 31/03/2025: <https://www.youtube.com/watch?v=xclY9ujY4Tk&ab_channel=DiogoAndrade>
+
 The Ultimate Multiplayer Tutorial for Unity - Netcode for GameObjects: <https://www.youtube.com/watch?v=swIM2z6Foxk&t=1591s&ab_channel=samyam>
 
 ### Chatgpt
