@@ -110,7 +110,7 @@ classDiagram
 4. Type: node server.js
 5. Server is now running, it will say something like "Matchmaking server running on <http://localhost:3000>
 6. Open with Unity project.
-7. Tools -> Launch Server + Client or Launch 2 times the Client, and be the server.
+7. Tools -> Build and Launch (Server + Client). Use Unity to be the second client or Launch Client (another).
 8. Both Clients will have an UI to insert their usernames.
 9. After both usernames were logged in, the match will begin showing both clients the game.
 10. When a Client reaches 0 or lower hp, and UI display on both Clients showing the results.
