@@ -95,11 +95,11 @@ The health NetworkVariable is of type ushort, initialize with 10 of value. So,
 
 ```mermaid
 classDiagram
-    Client A --> Server : 
-    Client B --> Server : 
-    Server --> Client A : 
-    Server --> Client B : 
-    Server Node.js --> Server :
+    Client A --> Server : ...
+    Client B --> Server : ...
+    Server --> Client A : ...
+    Server --> Client B : ...
+    Server Node.js --> Server : ...
 ```
 
 ## 🚀 How to run the project
