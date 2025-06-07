@@ -15,7 +15,6 @@ namespace LuckyMultiplayer.Scripts
 
         private void Start()
         {
-            // Get all SpriteRenderers in this object and its children
             spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
 
             if (spriteRenderers.Length > 0)
@@ -47,7 +46,6 @@ namespace LuckyMultiplayer.Scripts
                 {
                     isFlashing = false;
 
-                    // Reset to original color
                     foreach (var sr in spriteRenderers)
                     {
                         sr.color = sourceColor;

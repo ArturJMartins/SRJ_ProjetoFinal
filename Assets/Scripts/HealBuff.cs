@@ -19,7 +19,7 @@ namespace LuckyMultiplayer.Scripts
                 player.PickUpHealGem(healAmount);
             }
 
-            NetworkObject.Despawn(); // removes it from the scene
+            NetworkObject.Despawn();
         }
     }
 }

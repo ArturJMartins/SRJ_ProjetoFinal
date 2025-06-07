@@ -91,7 +91,6 @@ namespace LuckyMultiplayer.Scripts
             }
         }
 
-        // new
         [ServerRpc(RequireOwnership = false)]
         public void ReduceHealthServerRpc(ushort damage)
         {

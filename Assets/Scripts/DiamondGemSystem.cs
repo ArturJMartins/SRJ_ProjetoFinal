@@ -51,7 +51,6 @@ namespace LuckyMultiplayer.Scripts
             {
                 // Update UI immediately with current values
                 PlayerUI.UpdateDiamondUI?.Invoke(diamonds.Value);
-                //PlayerUI.UpdateHealthUI?.Invoke(health.Value);
                 PlayerUI.UpdateHealthUIWithMax?.Invoke(health.Value, (ushort)maxHealth);
                 PlayerUI.UpdateLevelUI?.Invoke(level.Value);
 
@@ -86,24 +85,18 @@ namespace LuckyMultiplayer.Scripts
         private void OnDiamondsChanged(ushort previousValue, ushort newValue)
         {
             if (IsOwner)
-            {
-                // static event from PlayerUI script
                 PlayerUI.UpdateDiamondUI?.Invoke(newValue);
-            }
         }
 
-        // new
         private void OnHealthChanged(ushort prev, ushort next)
         {
             if (IsOwner)
-            {
-                //PlayerUI.UpdateHealthUI?.Invoke(next);
                 PlayerUI.UpdateHealthUIWithMax?.Invoke(next, (ushort)maxHealth);
-            }
 
             maxHealth = CalculateMaxHealth(level.Value);
 
             if (flasher) flasher.Flash(flashColor, 0.2f);
+
             UpdateHPDisplay(); // this is outside of IsOwner because the other player needs to see the hp bar change
 
             if (IsServer && next == 0)
@@ -313,7 +306,7 @@ namespace LuckyMultiplayer.Scripts
 
                     if (diamondSystem != null)
                     {
-                        diamondSystem.ResetStats(); // Trigger reset for each player
+                        diamondSystem.ResetStats();
                     }
                 }
 

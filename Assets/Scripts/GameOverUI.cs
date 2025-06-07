@@ -34,7 +34,8 @@ namespace LuckyMultiplayer.Scripts
 
         private void OnRematchButtonPressed()
         {
-            var diamondSystem = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<DiamondGemSystem>();
+            var diamondSystem = NetworkManager.Singleton.LocalClient.
+                PlayerObject.GetComponent<DiamondGemSystem>();
             diamondSystem.RequestRematchServerRpc(); 
         }
 

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using System;
@@ -21,8 +20,6 @@ namespace LuckyMultiplayer.Scripts
 {
     public class NetworkSetup : MonoBehaviour
     {
-        // old
-        //[SerializeField] private PlayerController[] playerPrefabs;
         [SerializeField] private GameObject[] playerPrefabs;
         [SerializeField] private Transform[] spawnPoints;
         private int playerPrefabIndex = 0;

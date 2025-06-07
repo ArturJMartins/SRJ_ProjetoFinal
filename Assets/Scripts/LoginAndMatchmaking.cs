@@ -21,7 +21,6 @@ namespace LuckyMultiplayer.Scripts
 
         private string loggedInUsername;
         private bool isCancelling = false;
-        //private bool stopAskingForMatch = false;
 
         public override void OnNetworkSpawn()
         {
@@ -40,7 +39,6 @@ namespace LuckyMultiplayer.Scripts
 
         private void LoginButtonClicked()
         {
-            //stopAskingForMatch = false;
             string username = usernameInput.text;
             StartCoroutine(LoginCoroutine(username));
         }
@@ -198,7 +196,7 @@ namespace LuckyMultiplayer.Scripts
                     if (result.success && result.role == "client")
                     {
                         waitingText.text = "Match found! Joining...";
-                        StartCoroutine(StartGameSoon(result)); // <== Add this!
+                        StartCoroutine(StartGameSoon(result));
                         yield break;
                     }
                 }
